@@ -1,4 +1,3 @@
-
 // папки с файлами
 const project_folder = require('path').basename(__dirname) // вмемто папки dist создает папку с названием проэкта
 const source_folder = 'src'
@@ -21,7 +20,7 @@ const path = {
     css: source_folder + '/scss/style.scss',
     js: source_folder + '/js/script.js',
     images: source_folder + '/images/**/*.{jpg,JPG,png,svg,gif,ico,webp}',
-      fonts: source_folder + '/fonts/*.{ttf,woff,woff2}',
+    fonts: source_folder + '/fonts/*.{ttf,woff,woff2}',
     slickCss: 'node_modules/slick-carousel/slick/slick.css',
     slickJs: 'node_modules/slick-carousel/slick/slick.js',
   },
@@ -60,6 +59,7 @@ const { src, dest } = require('gulp'),
   group_media = require('gulp-group-css-media-queries'), // собирает по css мадиа запросы и помещает их в конец файла
   clean_css = require('gulp-clean-css'), // чистит и сжимает css
   rename = require('gulp-rename'), // переименовывает файл
+  babel = require('gulp-babel'), //переводит js-файлы в формат понятный формат, конвертирует javascript стандарта ES6 в ES5
   uglify = require('gulp-uglify-es').default, //сжимает js файлы
   imagemin = require('gulp-imagemin'), //минифицирует images
   newer = require('gulp-newer'), // Проверяем, было ли изменено (сжато) изображение ранее
@@ -71,7 +71,8 @@ const { src, dest } = require('gulp'),
   ttf2woff = require('gulp-ttf2woff'), //шрифт ttf2 в woff
   ttf2woff2 = require('gulp-ttf2woff2'), //шрифт ttf2 в woff2
   fonter = require('gulp-fonter'), //шрифт otf в ttf2 запускаеться отдельной командой gulp otf2ttf
-  ghPages = require('gulp-gh-pages') // выгружает проэкт на gitHub в github Pages запускаеться командой gulp deploy
+  ghPages = require('gulp-gh-pages'), // выгружает проэкт на gitHub в github Pages запускаеться командой gulp deploy
+  sourcemaps = require('gulp-sourcemaps') //рисует карту слитого воедино файла, чтобы было понятно, что из какого файла бралось
 
 //   обновляет браузер
 function browserSync(params) {
@@ -85,19 +86,18 @@ function browserSync(params) {
 
 // обрабатывает html
 function html() {
-  return (
-    src(path.src.html)
-      .pipe(fileinclude()) //подключает другие файлы к нужному
-      .pipe(gulpWebpHtml2()) //подключает webp в html замена верхнего
-      .pipe(dest(path.build.html))
-      .pipe(browsersync.stream())
-  )
+  return src(path.src.html)
+    .pipe(fileinclude()) //подключает другие файлы к нужному
+    .pipe(gulpWebpHtml2()) //подключает webp в html замена верхнего
+    .pipe(dest(path.build.html))
+    .pipe(browsersync.stream())
 }
 
 // обрабатывает css
 function css() {
   return (
     src(path.src.css)
+      .pipe(sourcemaps.init())
       .pipe(
         scss({
           outputStyle: 'expanded',
@@ -119,6 +119,7 @@ function css() {
       //   })
       // ) //добавляет изображения webp
       .pipe(webpCss()) //замена функции webpcss
+      .pipe(sourcemaps.write())
       .pipe(dest(path.build.css)) //выгружаем не сжатый файл
       .pipe(clean_css()) //сжимаем
       .pipe(
@@ -126,6 +127,7 @@ function css() {
           extname: '.min.css',
         })
       ) //переименовываем
+      .pipe(sourcemaps.write())
       .pipe(dest(path.build.css)) //выгружаем сжатый файл
       .pipe(browsersync.stream())
   )
@@ -145,19 +147,25 @@ function libs() {
 
 // обрабатывает js (добавить babal)
 function js() {
-  return (
-    src(path.src.js)
-      .pipe(fileinclude()) // подключает файлы внутри
-      .pipe(dest(path.build.js))
-      .pipe(uglify()) // сжимает js
-      .pipe(
-        rename({
-          extname: '.min.js',
-        }) // переименовываем
-      )
-      .pipe(dest(path.build.js)) // выгружаем
-      .pipe(browsersync.stream())
-  )
+  return src(path.src.js)
+    .pipe(sourcemaps.init())
+    .pipe(
+      babel({
+        presets: ['@babel/preset-env'],
+      })
+    ) //конвертирует javascript стандарта ES6 в ES5
+    .pipe(fileinclude()) // подключает файлы внутри
+    .pipe(sourcemaps.write())
+    .pipe(dest(path.build.js))
+    .pipe(uglify()) // сжимает js
+    .pipe(
+      rename({
+        extname: '.min.js',
+      }) // переименовываем
+    )
+    .pipe(sourcemaps.write())
+    .pipe(dest(path.build.js)) // выгружаем
+    .pipe(browsersync.stream())
 }
 
 // обрабатывает images, выгружаем webp и обычные изображения для старых браузеров
@@ -230,19 +238,27 @@ gulp.task('deploy', function () {
 
 // Кастомная функция подключает файлы шрифтов к стилям, записывет имена файлов шрифтов в fonts.scss
 function fontsStyle(params) {
-  let file_content = fs.readFileSync(source_folder + '/scss/_fonts.scss');
+  let file_content = fs.readFileSync(source_folder + '/scss/_fonts.scss')
   if (file_content == '') {
-    fs.writeFile(source_folder + '/scss/_fonts.scss', '', cb);
+    fs.writeFile(source_folder + '/scss/_fonts.scss', '', cb)
     return fs.readdir(path.build.fonts, function (err, items) {
       if (items) {
-        let c_fontname;
+        let c_fontname
         for (var i = 0; i < items.length; i++) {
-          let fontname = items[i].split('.');
-          fontname = fontname[0];
+          let fontname = items[i].split('.')
+          fontname = fontname[0]
           if (c_fontname != fontname) {
-            fs.appendFile(source_folder + '/scss/_fonts.scss', '@include font("' + fontname + '", "' + fontname + '", "400", "normal");\r\n', cb);
+            fs.appendFile(
+              source_folder + '/scss/_fonts.scss',
+              '@include font("' +
+                fontname +
+                '", "' +
+                fontname +
+                '", "400", "normal");\r\n',
+              cb
+            )
           }
-          c_fontname = fontname;
+          c_fontname = fontname
         }
       }
     })
