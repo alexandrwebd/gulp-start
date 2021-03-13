@@ -2,11 +2,12 @@
 // миксин подключает файлы шрифтов
 @mixin font($font_name, $file_name, $weight, $style) {
     @font-face {
-        font-family: $font_name;
-        font-display: swap;
-        src: url("../fonts/#{$file_name}.woff") format("woff"), url("../fonts/#{$file_name}.woff2") format("woff2");
+        font-family: $font_name, sans-serif; //исправить если нужны с засечками
+        src: url('../fonts/#{$file_name}.woff2') format('woff2'),
+        url('../fonts/#{$file_name}.woff') format('woff');
         font-weight: #{$weight};
         font-style: #{$style};
+        font-display: swap;
     }
 }
 

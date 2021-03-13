@@ -1,12 +1,12 @@
-//  lazysizes поюзать плагин ленивой подгрузки картинок
-// папки с файлами
-let project_folder = require('path').basename(__dirname) // вмемто папки dist создает папку с названием проэкта
-let source_folder = 'src'
 
-let fs = require('fs') //file system fs для подключения шрыфтов к стилям
+// папки с файлами
+const project_folder = require('path').basename(__dirname) // вмемто папки dist создает папку с названием проэкта
+const source_folder = 'src'
+
+const fs = require('fs') //file system fs для подключения шрыфтов к стилям
 
 // обьект с путями к файлами
-let path = {
+const path = {
   build: {
     // к финальным файлам
     html: project_folder + '/',
@@ -21,7 +21,7 @@ let path = {
     css: source_folder + '/scss/style.scss',
     js: source_folder + '/js/script.js',
     images: source_folder + '/images/**/*.{jpg,JPG,png,svg,gif,ico,webp}',
-    fonts: source_folder + '/fonts/*.ttf',
+      fonts: source_folder + '/fonts/*.{ttf,woff,woff2}',
     slickCss: 'node_modules/slick-carousel/slick/slick.css',
     slickJs: 'node_modules/slick-carousel/slick/slick.js',
   },
@@ -41,13 +41,15 @@ let path = {
 // перед конвертацией шрифтов файл _fonts.scss должен быть абсолютно пустым без пробелов, после в нем поменять font-weight, можно вынести в отдельную функцию
 // gulp svgSprite создает svg sprite (собирает все svg в один файл) , вызываеться отдельно в новом терминале командой gulp svgSprite, создает html файл презентацию иконок (открываем в редакторе и смотрим как подключить svg в верстке)
 // gulp otf2ttf конвертирует шрифты otf2 в ttf и перемещает в папку исходников для дальнейшей конвертации, запускаеться отдельной командой в новом терминале gulp otf2ttf, ошибка пути перемещает файл  в src
+// для исправления пути otf2ttf открываем node_module/gulp-fonter/dist/index.js находим строку newFont.path = source.dirname + '\\' меняем на '/'
 // gulp deploy выгружает проэкт на gitHub создает github Pages, запускаеться командой gulp deploy
 // функция libs конвертирует файлы используемых библиотек в файл libs. Библиотеки устанавливать и добавлять путь в мвссив src
 // стили сброшены normalize css, подключены @import в style.scss и в параметрах плагина scss
 // протестировать плагины webp css оставить один, протестировать webp html
+//  lazysizes поюзать плагин ленивой подгрузки картинок
 
 // Определяем константы Gulp и присваиваю переменные для написания сценария
-let { src, dest } = require('gulp'),
+const { src, dest } = require('gulp'),
   gulp = require('gulp'),
   browsersync = require('browser-sync').create(),
   fileinclude = require('gulp-file-include'), //подключает файлы (html, js) в новой версии плагина обьявлять переменную не нужно
@@ -258,13 +260,13 @@ function watchFiles(params) {
 }
 
 // сценарий выполнения поочередно, деляю первым и передаю в слежение
-let build = gulp.series(
+const build = gulp.series(
   clean,
   gulp.parallel(js, css, html, images, fonts, libs),
   fontsStyle
 )
 // сценарий выполнения паралельно
-let watch = gulp.parallel(build, watchFiles, browserSync)
+const watch = gulp.parallel(build, watchFiles, browserSync)
 
 // совмещаю переменные с gulp - экспортирую функции в gulp task
 exports.libs = libs

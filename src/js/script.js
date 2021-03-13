@@ -1,4 +1,7 @@
 $(function () {
+  //  если нужно подключить другой js
+  //   @@include('alert.js')
+
   // JS-функция определения поддержки WebP
   // function testWebP(callback) {
   // var webP = new Image();
