@@ -1,0 +1,28 @@
+// *** FORM ***
+.form {
+  &__row {
+  }
+  &__column {
+  }
+  &__line {
+  }
+  &__input {
+  }
+  &__button {
+  }
+  &__error {
+  }
+}
+
+// *** BUTTONS ***
+.btn {
+  display: inline-flex;
+  padding: 0 0;
+  @media (min-width: 992px) {
+    &:hover {
+    }
+  }
+  &._fm {
+    width: 100%;
+  }
+}

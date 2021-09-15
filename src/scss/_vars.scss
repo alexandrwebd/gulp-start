@@ -1,0 +1,31 @@
+// %heebo-lite {
+//   font-family: 'Heebo', sans-serif;
+//   font-weight: 300;
+// }
+// %heebo-regular {
+//   font-family: 'Heebo', sans-serif;
+//   font-weight: 500;
+// }
+
+// %heebo-bold {
+//   font-family: 'Heebo', sans-serif;
+//   font-weight: 700;
+// }
+// %heebo-black {
+//   font-family: 'Heebo', serif;
+//   font-weight: 900;
+// }
+// %arno-bold {
+//   font-family: 'Arno Pro', serif;
+//   font-weight: 800;
+// }
+$minWidth: 320px;
+$maxWidth: 1920; // ширина всего полотна
+$maxWidthContainer: 856; // контейнер
+$md1: $maxWidthContainer + 12;
+$md2: 991.98;
+$md3: 767.98;
+$md4: 479.98;
+// $text-color: #21243d;
+// $main-color: #ff6464;
+// $bg-color: #edf7fa;

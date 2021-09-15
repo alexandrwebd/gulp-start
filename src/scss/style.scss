@@ -1,0 +1,17 @@
+@import 'vars'; // переменные
+@import 'mixins'; // миксины
+//&display=swap&subset=cyrillic-ext (добавить параметр для быстрой загрузки и если есть кирилица)
+@import url('https://fonts.googleapis.com/css?family=Heebo:regular,300,500,700,900&display=swap&subset=cyrillic-ext');
+@import 'fonts'; // подключаем шрифты (плагином google fonts команда google fonts: insert css import)
+@import 'icons'; // иконочные шрифты (раскоментировать когда буду использовать)
+$fontFamily: 'Heebo'; // шрифт по умолчанию
+// @import 'vars'; // переменные
+@import 'global'; // глобальные стили
+
+//   *** my styles ***
+@import 'header';
+@import 'home';
+@import 'footer';
+
+//   *** media screan ***
+@import 'media';
