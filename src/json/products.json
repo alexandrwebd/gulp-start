@@ -1,0 +1,66 @@
+{
+  "products": [
+    {
+      "id": 5,
+      "url": "#",
+      "title": "Лукася",
+      "text": "Мягкое суфле",
+      "labels": "",
+      "image": "05.jpg",
+      "price": "90.00",
+      "priceOld": "",
+      "shareUrl": "",
+      "likeUrl": ""
+    },
+    {
+      "id": 6,
+      "url": "#",
+      "title": "Лукася",
+      "text": "Мягкое суфле",
+      "labels": [
+        {
+          "type": "sale",
+          "value": "-50%"
+        },
+        {
+          "type": "new",
+          "value": "New"
+        }
+      ],
+      "image": "06.jpg",
+      "price": "90.00",
+      "priceOld": "",
+      "shareUrl": "",
+      "likeUrl": ""
+    },
+    {
+      "id": 7,
+      "url": "#",
+      "title": "Лукася",
+      "text": "Мягкое суфле",
+      "labels": "",
+      "image": "07.jpg",
+      "price": "90.00",
+      "priceOld": "",
+      "shareUrl": "",
+      "likeUrl": ""
+    },
+    {
+      "id": 8,
+      "url": "#",
+      "title": "Лукася",
+      "text": "Мягкое суфле",
+      "labels": [
+        {
+          "type": "new",
+          "value": "New"
+        }
+      ],
+      "image": "08.jpg",
+      "price": "90.00",
+      "priceOld": "",
+      "shareUrl": "",
+      "likeUrl": ""
+    }
+  ]
+}

@@ -1,31 +1,34 @@
-// %heebo-lite {
-//   font-family: 'Heebo', sans-serif;
+// %gilroy-lite {
+//   font-family: 'Gilroy', sans-serif;
 //   font-weight: 300;
 // }
-// %heebo-regular {
-//   font-family: 'Heebo', sans-serif;
-//   font-weight: 500;
-// }
+%gilroy-regular {
+  font-family: 'Gilroy', sans-serif;
+  font-weight: 400;
+}
 
-// %heebo-bold {
-//   font-family: 'Heebo', sans-serif;
+// %gilroy-bold {
+//   font-family: 'Gilroy', sans-serif;
 //   font-weight: 700;
 // }
-// %heebo-black {
-//   font-family: 'Heebo', serif;
+// %gilroy-black {
+//   font-family: 'Gilroy', serif;
 //   font-weight: 900;
 // }
-// %arno-bold {
-//   font-family: 'Arno Pro', serif;
+// %gilroy {
+//   font-family: 'Gilroy', serif;
 //   font-weight: 800;
 // }
 $minWidth: 320px;
-$maxWidth: 1920; // ширина всего полотна
-$maxWidthContainer: 856; // контейнер
+$maxWidth: 1440; // ширина всего полотна
+$maxWidthContainer: 1270; // контейнер 1240 + 30px
 $md1: $maxWidthContainer + 12;
 $md2: 991.98;
 $md3: 767.98;
 $md4: 479.98;
-// $text-color: #21243d;
-// $main-color: #ff6464;
+$fontSize: 16px;
+$orangeColor: #e89f71;
+$grayColor: #898989;
+$darkGrayColor: #616161;
+$mainColor: #3a3a3a;
 // $bg-color: #edf7fa;

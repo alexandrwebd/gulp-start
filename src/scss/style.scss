@@ -2,16 +2,64 @@
 @import 'mixins'; // миксины
 //&display=swap&subset=cyrillic-ext (добавить параметр для быстрой загрузки и если есть кирилица)
 @import url('https://fonts.googleapis.com/css?family=Heebo:regular,300,500,700,900&display=swap&subset=cyrillic-ext');
-@import 'fonts'; // подключаем шрифты (плагином google fonts команда google fonts: insert css import)
+
+@import 'fonts'; // подключаем шрифты плагином google fonts (shift + command + p) команда google fonts: insert css import (назвагие шрифта)
 @import 'icons'; // иконочные шрифты (раскоментировать когда буду использовать)
 $fontFamily: 'Heebo'; // шрифт по умолчанию
 // @import 'vars'; // переменные
 @import 'global'; // глобальные стили
 
 //   *** my styles ***
+// @import 'lightgallery';
 @import 'header';
 @import 'home';
 @import 'footer';
+@import 'popup';
+@import 'sliders';
+// ===================================================================================
+.advantages {
+  @include adaptiv-value('padding-top', 88, 30, 1);
+  @include adaptiv-value('padding-bottom', 88, 30, 1);
+  &__container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  &__item {
+    display: inline-grid;
+    padding: 15px 0;
+    grid-template: auto auto / 85px 1fr;
+    @media (max-width: $md2+px) {
+      min-width: 280px;
+    }
+    @media (max-width: $md3+px) {
+      grid-template: auto auto / auto 1fr;
+    }
+  }
+  &__icon {
+    text-align: center;
+    align-self: center;
+    grid-row: span 2;
+    width: 40px;
+    img {
+      max-width: 100%;
+    }
+    @media (max-width: $md3+px) {
+      padding: 0px 15px 0px 0px;
+    }
+  }
+  &__title {
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 150%;
+    margin: 0px 0px 2px/18px * 1em 0px;
+  }
+  &__text {
+    line-height: 150%;
+    color: $grayColor;
+  }
+}
 
+// ===========================================================================
 //   *** media screan ***
 @import 'media';

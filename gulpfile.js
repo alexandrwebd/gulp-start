@@ -13,16 +13,20 @@ const path = {
     js: project_folder + '/js/',
     images: project_folder + '/images/',
     fonts: project_folder + '/fonts/',
+    json: project_folder + '/json/',
   },
   src: {
     // к исходникам
     html: [source_folder + '/*.html', '!' + source_folder + '/_*.html'], // исключаю файлы с подчеркиванием при перемещении в продакшен
     css: source_folder + '/scss/style.scss',
-    js: source_folder + '/js/script.js',
+    js: source_folder + '/js/files/script.js',
     images: source_folder + '/images/**/*.{jpg,JPG,png,svg,gif,ico,webp}',
     fonts: source_folder + '/fonts/*.{ttf,woff,woff2}',
+    json: source_folder + '/json/*.*',
     slickCss: 'node_modules/slick-carousel/slick/slick.css',
     slickJs: 'node_modules/slick-carousel/slick/slick.js',
+    swiperCss: 'node_modules/swiper/swiper-bundle.css',
+    swiperJs: 'node_modules/swiper/swiper-bundle.js',
   },
   watch: {
     // пути к файлам которые нужно постоянно слушать
@@ -30,14 +34,16 @@ const path = {
     css: source_folder + '/scss/**/*.scss',
     js: source_folder + '/js/**/*.js',
     images: source_folder + '/images/**/*.{jpg,png,svg,gif,ico,webp}',
+    json: source_folder + '/json/*.*',
   },
   clean: './' + project_folder + '/', // путь по которому делаеться удаление после каждого запуска gulp
 }
 
 //                        *** Прочти ***
-
+// Библиотеки сначала установить, добавить путь в обьект с путями - подключать в функцию libs, добавить путь к css и js в масив src([path.src.swiperCss]) и return src([path.src.swiperJs])
 // для конвертации шрифтов поместить шрифты ttf2 в папку src/fonts
-// перед конвертацией шрифтов файл _fonts.scss должен быть абсолютно пустым без пробелов, после в нем поменять font-weight, можно вынести в отдельную функцию
+// для коректной выгрузки иконок с figma, выделяю shift + comand + O
+// перед конвертацией шрифтов файл _fonts.scss должен быть абсолютно пустым без пробелов, после в нем поменять font-weight и поменять в единое семейство шрифта в первом слове, можно вынести в отдельную функцию
 // gulp svgSprite создает svg sprite (собирает все svg в один файл) , вызываеться отдельно в новом терминале командой gulp svgSprite, создает html файл презентацию иконок (открываем в редакторе и смотрим как подключить svg в верстке)
 // gulp otf2ttf конвертирует шрифты otf2 в ttf и перемещает в папку исходников для дальнейшей конвертации, запускаеться отдельной командой в новом терминале gulp otf2ttf, ошибка пути перемещает файл  в src
 // для исправления пути otf2ttf открываем node_module/gulp-fonter/dist/index.js находим строку newFont.path = source.dirname + '\\' меняем на '/'
@@ -57,6 +63,7 @@ const { src, dest } = require('gulp'),
   concat = require('gulp-concat'), // конкатенирует и переименовывает файлы
   autoprefixer = require('gulp-autoprefixer'), //добавляет вендерные префиксы
   group_media = require('gulp-group-css-media-queries'), // собирает по css мадиа запросы и помещает их в конец файла
+  plumber = require('gulp-plumber'), // Отслеживает ошибки и выводит их в консоль
   clean_css = require('gulp-clean-css'), // чистит и сжимает css
   rename = require('gulp-rename'), // переименовывает файл
   babel = require('gulp-babel'), //переводит js-файлы в формат понятный формат, конвертирует javascript стандарта ES6 в ES5
@@ -81,13 +88,25 @@ function browserSync(params) {
       baseDir: './' + project_folder + '/',
     },
     notify: false, // Отключаем уведомления
+    port: 3000,
   })
+}
+
+// копирует json
+function json() {
+  return src(path.src.json).pipe(plumber()).pipe(dest(path.build.json))
 }
 
 // обрабатывает html
 function html() {
   return src(path.src.html)
-    .pipe(fileinclude()) //подключает другие файлы к нужному
+    .pipe(plumber())
+    .pipe(
+      fileinclude({
+        prefix: '@@',
+        basepath: '@file',
+      })
+    ) //подключает другие файлы к нужному
     .pipe(gulpWebpHtml2()) //подключает webp в html замена верхнего
     .pipe(dest(path.build.html))
     .pipe(browsersync.stream())
@@ -97,6 +116,7 @@ function html() {
 function css() {
   return (
     src(path.src.css)
+      .pipe(plumber())
       .pipe(sourcemaps.init())
       .pipe(
         scss({
@@ -135,11 +155,11 @@ function css() {
 
 // конвертирует файлы используемых библиотек в файл libs. Библиотеки устанавливать и добавлять путь в мвссив src
 function libs() {
-  src(path.src.slickCss) // берем css файлы используемых библиотек
+  src(path.src.swiperCss) // берем css файлы используемых библиотек
     .pipe(concat('libs.min.css')) // конкатенируем, переименовываем
     .pipe(clean_css()) //сжимаем
     .pipe(dest(path.build.css)) //выгружаем сжатый файл
-  return src(path.src.slickJs) // берем js файлы используемых библиотек
+  return src(path.src.swiperJs) // берем js файлы используемых библиотек
     .pipe(concat('libs.min.js')) // конкатенируем
     .pipe(uglify()) // сжимаем
     .pipe(dest(path.build.js)) // выгружаем
@@ -148,13 +168,19 @@ function libs() {
 // обрабатывает js (добавить babal)
 function js() {
   return src(path.src.js)
+    .pipe(plumber())
     .pipe(sourcemaps.init())
     .pipe(
       babel({
         presets: ['@babel/preset-env'],
       })
     ) //конвертирует javascript стандарта ES6 в ES5
-    .pipe(fileinclude()) // подключает файлы внутри
+    .pipe(
+      fileinclude({
+        prefix: '@@',
+        basepath: '@file',
+      })
+    ) // подключает файлы внутри
     .pipe(sourcemaps.write())
     .pipe(dest(path.build.js))
     .pipe(uglify()) // сжимает js
@@ -273,25 +299,27 @@ function watchFiles(params) {
   gulp.watch([path.watch.css], css)
   gulp.watch([path.watch.js], js)
   gulp.watch([path.watch.images], images)
+  gulp.watch([path.watch.json], json)
 }
 
 // сценарий выполнения поочередно, деляю первым и передаю в слежение
 const build = gulp.series(
   clean,
-  gulp.parallel(js, css, html, images, fonts, libs),
+  gulp.parallel(html, css, js, json, images, fonts, libs),
   fontsStyle
 )
 // сценарий выполнения паралельно
 const watch = gulp.parallel(build, watchFiles, browserSync)
 
 // совмещаю переменные с gulp - экспортирую функции в gulp task
+exports.html = html
+exports.scss = scss
+exports.js = js
+exports.jsons = json
 exports.libs = libs
 exports.fontsStyle = fontsStyle
 exports.fonts = fonts
 exports.images = images
-exports.js = js
-exports.scss = scss
-exports.html = html
 exports.build = build
 exports.watch = watch
 exports.default = watch

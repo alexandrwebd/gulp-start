@@ -28,27 +28,30 @@
 
 // вставляю сгеннерированые иконочные шрифты:
 
-// ._icon-facebook:before {
-//   content: '\e900';
-// }
-// ._icon-instagram:before {
-//   content: '\e901';
-// }
-// ._icon-linkedin:before {
-//   content: '\e902';
-// }
-// ._icon-twitter:before {
-//   content: '\e903';
-// }
-// ._icon-phone:before {
-//   content: '\e942';
-// }
-// ._icon-email:before {
-//   content: '\e945';
-// }
-// ._icon-location:before {
-//   content: '\e948';
-// }
-// ._icon-github:before {
-//   content: '\eab0';
-// }
+._icon-cart:before {
+  content: '\e900';
+}
+._icon-arrow-down:before {
+  content: '\e901';
+}
+._icon-location:before {
+  content: '\e902';
+}
+._icon-phone:before {
+  content: '\e903';
+}
+._icon-search:before {
+  content: '\e904';
+}
+._icon-send:before {
+  content: '\e905';
+}
+._icon-share:before {
+  content: '\e906';
+}
+._icon-arrow-right:before {
+  content: '\e907';
+}
+._icon-heart:before {
+  content: '\e9da';
+}

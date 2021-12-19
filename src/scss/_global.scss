@@ -12,10 +12,14 @@ body {
   height: 100vh;
   overflow-x: hidden;
   margin: 0;
-  // color: $text-color;
-  // @extend %heebo-regular;
-  // font-size: 16;
+  color: $mainColor;
+  @extend %gilroy-regular;
+  font-size: $fontSize;
   // line-height: 23 / 16 * 100%;
+}
+// убирает скрол у body если открыть попап
+body.lock {
+  overflow: hidden;
 }
 a {
   display: inline-block;
@@ -49,7 +53,7 @@ h6 {
 .page {
   //   padding: 70px 0 0 0;
   flex: 1 1 auto;
-  @media (max-width: $md2+px) {
+  @media (max-width: $md2 + px) {
     //  padding: 50px 0 0 0;
   }
   @media (max-width: $md3+px) {
@@ -58,16 +62,22 @@ h6 {
 }
 .container {
   max-width: $maxWidthContainer + px;
+  padding: 0 15px;
   margin: 0 auto;
-  @media (max-width: $md1+px) {
-    max-width: 750px;
-  }
-  @media (max-width: $md3+px) {
-    max-width: none;
-    padding: 0 10px;
-  }
+  // text-align: center;
+  // если адаптив по брекпоинтам
+  // @media (max-width: $md1+px) {
+  //   max-width: 750px;
+  // }
+  // @media (max-width: $md3+px) {
+  //   max-width: none;
+  //   padding: 0 10px;
+  // }
 }
 .title {
+  @include adaptiv-value('font-size', 40, 24, 1);
+  font-weight: 700;
+  line-height: 120%;
   // font-size: 44px;
   // line-height: 60 / 44 * 100%;
   // @extend %heebo-bold;
@@ -76,33 +86,37 @@ h6 {
   // }
 }
 
-.section {
+.red {
+  color: red;
 }
 
 .btn {
-  // background: $main-color;
-  // border-radius: 2px;
-  // border: 2px solid transparent;
-  // display: inline-flex;
-  // padding: 0 20px;
-  // align-items: center;
-  // justify-content: center;
-  // text-align: center;
-  // height: 47px;
-  // color: #fff;
-  // font-size: 20px;
-  // line-height: 29 / 20 * 100%;
-  // transition: background-color 0.3s ease 0s;
-  // @extend %heebo-regular;
+  display: inline-flex;
+  padding: 0 15px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.3s ease 0s;
+  min-height: 48px;
+  &_white {
+    color: $orangeColor;
+    background-color: #fff;
+    @media (any-hover: hover) {
+      &:hover {
+        background-color: $orangeColor;
+        color: #fff;
+      }
+    }
+  }
   // @media (min-width: 992px) {
   //   &:hover {
   //     background: transparent;
   //     border: 2px solid $main-color;
   //   }
   // }
-  &._fm {
-    width: 100%;
-  }
+  // &._fm {
+  //   width: 100%;
+  // }
 }
 .text {
   // color: $text-color;
@@ -110,9 +124,25 @@ h6 {
   // font-size: 16px;
   // line-height: 23 / 16 * 100%;
 }
+._footer-title {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  @include adaptiv-value('font-size', 24, 20, 1);
+  line-height: 29 / 24 * 100%;
+  color: #000;
+  font-weight: 700;
+}
+
+._flyImage._ibg {
+  opacity: 1;
+  position: fixed;
+  z-index: 100;
+  transition: all 1s ease 0s;
+}
 
 // ***  позволяет делать изображение адаптивным ***
-.ibg {
+._ibg {
   position: relative;
   img {
     position: absolute;
@@ -123,13 +153,14 @@ h6 {
     object-fit: cover;
   }
 }
+// Если зашли с IE
 body.ie {
-  .ibg {
+  ._ibg {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
   }
-  .ibg img {
+  ._ibg img {
     width: 0;
     height: 0;
     opacity: 0;
